@@ -24,19 +24,32 @@ export function activate(context: vscode.ExtensionContext) {
 				let responseText = 'Thinking...';
 
 				try {
+					// const streamResponse = await ollama.chat({
+					// 	//model: 'codellama:latest',
+					// 	//model: 'deepseek-r1:latest',
+					// 	model: 'llama3.2:latest',
+					// 	messages: [{ role: 'user', content: userPrompt }],
+					// 	stream: true,
+					// });
+
+					// chat(request: ChatRequest & {
+					// 	stream?: false;
+					// }): Promise<ChatResponse>;
+
 					const streamResponse = await ollama.chat({
-						model: 'codellama:latest',
+						//model: 'codellama:latest',
 						//model: 'deepseek-r1:latest',
-						//model: 'llama3.2:latest',
+						model: 'llama3.2:latest',
 						messages: [{ role: 'user', content: userPrompt }],
-						stream: true,
+						stream: false,
 					});
 
-					responseText = '';
-					for await (const chunk of streamResponse) {
-						responseText += chunk.message.content;
-						panel.webview.postMessage({ command: 'chatResponse', text: responseText });
-					}
+					responseText = streamResponse.message.content;
+					panel.webview.postMessage({ command: 'chatResponse', text: responseText });
+					// for await (const chunk of streamResponse) {
+					// 	responseText += chunk.message.content;
+					// 	panel.webview.postMessage({ command: 'chatResponse', text: responseText });
+					// }
 
 
 				} catch (error) {
