@@ -1,6 +1,6 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
+
 import ollama from 'ollama';
+import { marked } from 'marked';
 import * as vscode from 'vscode';
 
 // This method is called when your extension is activated
@@ -12,6 +12,7 @@ export function activate(context: vscode.ExtensionContext) {
 	console.log('Congratulations, your extension "stevor" is now active!');
 
 	const disposable = vscode.commands.registerCommand('stevor.start', () => {
+
 		const panel = vscode.window.createWebviewPanel('deepchat', 'Deep Seek Chat',
 			vscode.ViewColumn.One, { enableScripts: true });
 
@@ -44,7 +45,7 @@ export function activate(context: vscode.ExtensionContext) {
 						stream: false,
 					});
 
-					responseText = streamResponse.message.content;
+					responseText = await marked.parse(streamResponse.message.content);
 					panel.webview.postMessage({ command: 'chatResponse', text: responseText });
 					// for await (const chunk of streamResponse) {
 					// 	responseText += chunk.message.content;
