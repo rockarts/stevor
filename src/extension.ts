@@ -1,5 +1,5 @@
 
-import ollama, { ListResponse, ModelResponse } from 'ollama';
+import ollama, { ModelResponse } from 'ollama';
 import { marked } from 'marked';
 import * as vscode from 'vscode';
 
@@ -29,6 +29,8 @@ export function activate(context: vscode.ExtensionContext) {
 				const selectedModel = message.modelName;
 				let responseText = 'Thinking...';
 
+				panel.webview.postMessage({ command: 'chatThinking' });
+
 				try {
 					const streamResponse = await ollama.chat({
 						model: selectedModel,
@@ -38,13 +40,14 @@ export function activate(context: vscode.ExtensionContext) {
 
 					responseText = await marked.parse(streamResponse.message.content);
 					panel.webview.postMessage({ command: 'chatResponse', text: responseText });
+
 				} catch (error) {
 					panel.webview.postMessage({ command: 'chatResponse', text: String(error) });
 					console.error('Error in chat request:', error);
-					responseText = 'An error occurred while processing your request.';
 				}
 			}
 		});
+
 	});
 
 	context.subscriptions.push(disposable);
@@ -104,20 +107,25 @@ function getWebviewContent(models: string[]) {
                     });
                 });
 
-                window.addEventListener('message', (event) => {
-                    const { command, text } = event.data;
-                    if (command === 'chatResponse') {
-                        const responseElement = document.getElementById('response');
-                        if (responseElement) {
-                            responseElement.innerHTML = text;
+				window.addEventListener('message', (event) => {
+					const { command, text } = event.data;
+					const responseElement = document.getElementById('response');
 
-                            // Apply syntax highlighting
-                            document.querySelectorAll('pre code').forEach((block) => {
-                                hljs.highlightElement(block);
-                            });
-                        }
-                    }
-                });
+					if (command === 'chatThinking') {
+						responseElement.innerHTML = "<em>Thinking...</em>";
+					}
+
+					if (command === 'chatResponse') {
+						if (responseElement) {
+							responseElement.innerHTML = text;
+
+							// Apply syntax highlighting
+							document.querySelectorAll('pre code').forEach((block) => {
+								hljs.highlightElement(block);
+							});
+						}
+					}
+				});
             </script>
         </body>
     </html>`;
