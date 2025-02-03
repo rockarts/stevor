@@ -77,8 +77,12 @@ function getWebviewContent(models: string[]) {
                     margin-top: 1rem; 
                     padding: 0.5rem; 
                     min-height: 100px; 
+                    white-space: pre-wrap; /* Preserve formatting */
                 }
             </style>
+            <!-- Include highlight.js -->
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github-dark.min.css">
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
         </head>
         <body>
             <h2>Deep Seek Extensions</h2>
@@ -91,12 +95,12 @@ function getWebviewContent(models: string[]) {
                 
                 document.getElementById('askBtn').addEventListener('click', () => {
                     const text = document.getElementById('prompt').value;
-                    const selectedModel = document.getElementById('models').value; // ✅ Capture selected model
+                    const selectedModel = document.getElementById('models').value;
 
                     vscode.postMessage({ 
                         command: 'chat', 
                         text: text, 
-                        modelName: selectedModel // ✅ Send selected model name
+                        modelName: selectedModel
                     });
                 });
 
@@ -106,6 +110,11 @@ function getWebviewContent(models: string[]) {
                         const responseElement = document.getElementById('response');
                         if (responseElement) {
                             responseElement.innerHTML = text;
+
+                            // Apply syntax highlighting
+                            document.querySelectorAll('pre code').forEach((block) => {
+                                hljs.highlightElement(block);
+                            });
                         }
                     }
                 });
@@ -115,6 +124,5 @@ function getWebviewContent(models: string[]) {
 
 	return html;
 }
-
 // This method is called when your extension is deactivated
 export function deactivate() { }
