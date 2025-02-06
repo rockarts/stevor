@@ -2,7 +2,7 @@
   "name": "stevor",
   "displayName": "stevor",
   "description": "A VSCode shell around Ollama",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "repository": "https://github.com/rockarts/stevor",
   "publisher": "Figure4Software",
   "engines": {
