@@ -2,7 +2,9 @@
   "name": "stevor",
   "displayName": "stevor",
   "description": "A VSCode shell around Ollama",
-  "version": "0.0.1",
+  "version": "1.0.0",
+  "repository": "https://github.com/rockarts/stevor",
+  "publisher": "Figure4Software",
   "engines": {
     "vscode": "^1.96.0"
   },
@@ -15,7 +17,7 @@
     "commands": [
       {
         "command": "stevor.start",
-        "title": "Chat with DeepSeek"
+        "title": "LLM Chat"
       }
     ]
   },
@@ -25,7 +27,8 @@
     "watch": "tsc -watch -p ./",
     "pretest": "npm run compile && npm run lint",
     "lint": "eslint src",
-    "test": "vscode-test"
+    "test": "vscode-test",
+    "release": "npx vsce package"
   },
   "devDependencies": {
     "@types/mocha": "^10.0.10",
